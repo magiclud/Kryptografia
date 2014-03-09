@@ -14,8 +14,7 @@ public class DecryptTextMain {
 				RC4wersjaWlasciwa.pobierzKlucz(sciezkaDoKeyStore, aliasHasla, hasloDoKeystora));
 	
 		String mozliweWyrazenie ="the";
-		byte[] kryptogramWyrazenia = RC4wersjaWlasciwa.zakoduj(mozliweWyrazenie,
-				RC4wersjaWlasciwa.pobierzKlucz(sciezkaDoKeyStore, aliasHasla, hasloDoKeystora));
+		byte[] kryptogramWyrazenia = mozliweWyrazenie.getBytes();
 	
 		System.out.println(wiadomosc);
 		System.out.println(new String(kryptogram));
@@ -46,7 +45,9 @@ public class DecryptTextMain {
 		System.out.println("Xor (xora tekstow jawnych) i wyrazenia:    ");
 		byte[] xor2XorIWyrazenie = DecryptText.wykonajXor(xorTekstowJawnych, przesunieteWtrazenie);
 		DecryptText.wyswietlenie(xor2XorIWyrazenie);
-		System.out.println("Wartosc tego xora:    " + new String (xor2XorIWyrazenie) );
+		String s = new String (xor2XorIWyrazenie);
+		System.out.println("Wartosc tego xora:    " + s );
+		System.out.println("Wartosc hex: "+ DecryptText.zapisHex(xor2XorIWyrazenie));
 		
 	
 		}
