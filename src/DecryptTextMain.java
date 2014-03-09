@@ -25,16 +25,28 @@ public class DecryptTextMain {
 		System.out.println(new String(kryptogramWyrazenia));
 		
 		System.out.println("Xor tekstow jawnych: ");
-		DecryptText.wyswietlenie(DecryptText.wykonajXor(wiadomosc.getBytes(), wiadomosc2.getBytes()));
-		//System.out.println("Wartosc hex: "+ RC4wersjaWlasciwa.ToHex(kryptogram));
+		byte[] xorTekstowJawnych = DecryptText.wykonajXor(wiadomosc.getBytes(), wiadomosc2.getBytes());
+		DecryptText.wyswietlenie(xorTekstowJawnych);
+		//System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram));
+		//System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram2));
 		System.out.println("Xor kryptogramow:    ");
 		DecryptText.wyswietlenie(DecryptText.wykonajXor(kryptogram, kryptogram2));
 		System.out.println("");
-		System.out.println("Xor kryptogramu1 i litery:    ");
-		DecryptText.wyswietlenie(DecryptText.wykonajXor(kryptogram, kryptogramWyrazenia));
-		System.out.println("Wartosc tego xora:    "  );
-//		System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram));
-//		System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram2));
+		System.out.println("Xor (xora tekstow jawnych) i wyrazenia:    ");
+		byte[] xorXorIWyrazenie = DecryptText.wykonajXor(xorTekstowJawnych, kryptogramWyrazenia);
+		DecryptText.wyswietlenie(xorXorIWyrazenie);
+		System.out.println("Wartosc tego xora:    " + new String (xorXorIWyrazenie) );
+
+		int oIlePrzesuniecieKryptogramu = 9;
+		System.out.println("Przesuniety kryptogram mozliwego wyrazenia o " + oIlePrzesuniecieKryptogramu);
+		byte[] przesunieteWtrazenie = DecryptText.przeunicieElementowTablicy(kryptogramWyrazenia, xorTekstowJawnych.length, oIlePrzesuniecieKryptogramu);
+		DecryptText.wyswietlenie(przesunieteWtrazenie);
+		
+		System.out.println("");
+		System.out.println("Xor (xora tekstow jawnych) i wyrazenia:    ");
+		byte[] xor2XorIWyrazenie = DecryptText.wykonajXor(xorTekstowJawnych, przesunieteWtrazenie);
+		DecryptText.wyswietlenie(xor2XorIWyrazenie);
+		System.out.println("Wartosc tego xora:    " + new String (xor2XorIWyrazenie) );
 		
 	
 		}
