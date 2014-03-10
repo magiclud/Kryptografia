@@ -41,14 +41,14 @@ public class DecryptText {
 		}
 		System.out.println("");
 	}
-	public static byte[] przeunicieElementowTablicy(byte[] kryptogramWyrazenia, int maksymalnaDlugosc, int oIle) {
-		if(maksymalnaDlugosc<kryptogramWyrazenia.length + oIle ){
+	public static byte[] przeunicieElementowTablicy(byte[] mozliweWyrazenie, int maksymalnaDlugosc, int oIle) {
+		if(maksymalnaDlugosc<mozliweWyrazenie.length + oIle ){
 			//throw wyjatek
 		}
 		byte[] pom = new byte[maksymalnaDlugosc];
 		int oileTemp = oIle;
-		for(int i =kryptogramWyrazenia.length-1;i>=0; i--, oileTemp-- ){
-			pom[kryptogramWyrazenia.length-1+oileTemp]= kryptogramWyrazenia[i];
+		for(int i =mozliweWyrazenie.length-1;i>=0; i--, oileTemp-- ){
+			pom[mozliweWyrazenie.length-1+oileTemp]= mozliweWyrazenie[i];
 		 }
 		for(int i=oIle; oIle>0; oIle--){
 			pom[i-1]=0;

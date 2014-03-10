@@ -13,42 +13,25 @@ public class DecryptTextMain {
 		byte[] kryptogram2 = RC4wersjaWlasciwa.zakoduj(wiadomosc2,
 				RC4wersjaWlasciwa.pobierzKlucz(sciezkaDoKeyStore, aliasHasla, hasloDoKeystora));
 	
-		String mozliweWyrazenie ="the";
-		byte[] kryptogramWyrazenia = mozliweWyrazenie.getBytes();
+//		System.out.println(wiadomosc);
+//		System.out.println(new String(kryptogram));
+//		System.out.println(wiadomosc2);
+//		System.out.println(new String(kryptogram2)); 
 	
-		System.out.println(wiadomosc);
-		System.out.println(new String(kryptogram));
-		System.out.println(wiadomosc2);
-		System.out.println(new String(kryptogram2)); 
-		System.out.println(mozliweWyrazenie);
-		System.out.println(new String(kryptogramWyrazenia));
-		
-		System.out.println("Xor tekstow jawnych: ");
-		byte[] xorTekstowJawnych = DecryptText.wykonajXor(wiadomosc.getBytes(), wiadomosc2.getBytes());
-		DecryptText.wyswietlenie(xorTekstowJawnych);
-		//System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram));
-		//System.out.println("Wartosc hex: "+ DecryptText.zapisHex(kryptogram2));
-		System.out.println("Xor kryptogramow:    ");
-		DecryptText.wyswietlenie(DecryptText.wykonajXor(kryptogram, kryptogram2));
+	//	System.out.println("Xor kryptogramow:    ");
+		byte[] xorKryptogramow = DecryptText.wykonajXor(kryptogram, kryptogram2);
+	//	DecryptText.wyswietlenie(xorKryptogramow);
 		System.out.println("");
-		System.out.println("Xor (xora tekstow jawnych) i wyrazenia:    ");
-		byte[] xorXorIWyrazenie = DecryptText.wykonajXor(xorTekstowJawnych, kryptogramWyrazenia);
-		DecryptText.wyswietlenie(xorXorIWyrazenie);
-		System.out.println("Wartosc tego xora:    " + new String (xorXorIWyrazenie) );
-
-		int oIlePrzesuniecieKryptogramu = 9;
-		System.out.println("Przesuniety kryptogram mozliwego wyrazenia o " + oIlePrzesuniecieKryptogramu);
-		byte[] przesunieteWtrazenie = DecryptText.przeunicieElementowTablicy(kryptogramWyrazenia, xorTekstowJawnych.length, oIlePrzesuniecieKryptogramu);
-		DecryptText.wyswietlenie(przesunieteWtrazenie);
 		
-		System.out.println("");
-		System.out.println("Xor (xora tekstow jawnych) i wyrazenia:    ");
-		byte[] xor2XorIWyrazenie = DecryptText.wykonajXor(xorTekstowJawnych, przesunieteWtrazenie);
-		DecryptText.wyswietlenie(xor2XorIWyrazenie);
-		String s = new String (xor2XorIWyrazenie);
-		System.out.println("Wartosc tego xora:    " + s );
-		System.out.println("Wartosc hex: "+ DecryptText.zapisHex(xor2XorIWyrazenie));
+		/*tablice najczesciej wystepujacych liter*/
+		byte[] tablicaE = new byte[xorKryptogramow.length];
 		
-	
+		for(int i =0; i<xorKryptogramow.length;i++){
+			tablicaE[i]='e';
 		}
+		System.out.println("tablicaE: " + new String(tablicaE));
+		
+			byte[] xorXorIWyrazenie2 = DecryptText.wykonajXor(xorKryptogramow, tablicaE );
+			System.out.println("Wartosc xora (xorKryptogramow i tablicyLiterE):    " + new String (xorXorIWyrazenie2) );
+}
 }
