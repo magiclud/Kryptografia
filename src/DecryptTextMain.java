@@ -19,7 +19,7 @@ public class DecryptTextMain {
 		byte[] xorKryptogramow = DecryptText
 				.wykonajXor(kryptogram, kryptogram2);
 
-		String alfabet = "^[0-9A-E.-,!()]+$";
+		String alfabet = "^[a-zA-Z.-,!()]+$";
 		
 		String[] wiadDoOdszyfrowania = Wiadomosci.wiadDoOdszyfrowania
 				.split(" ");
