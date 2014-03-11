@@ -1,3 +1,5 @@
+import java.nio.charset.Charset;
+
 public class DecryptText {
 
 	public static byte[] wykonajXor(byte[] wiad1, byte[] wiad2) {
@@ -26,4 +28,28 @@ public class DecryptText {
 		System.out.println("");
 	}
 
-}
+	static String alfabet = "^[a-zA-UWY-Z\\,\\.\\-\\!\\(\\)\\s]+$";
+
+	public static byte[] uzupelnijZeramiNieprawidloweBity(byte[] mozliweLitery, int length) {
+	
+		char[] litery = new char[length];
+		int[] tab = new int[length];
+		for(int i =0; i<length; i++){
+			litery[i] = (char)mozliweLitery[i];
+			String znak = Character.toString(litery[i]);
+			if(!znak.matches(alfabet)){
+				litery[i]=0;
+			}
+			tab[i]=litery[i];
+		}
+		byte[] odpowiednieLitery = new byte[length];
+		for (int i = 0; i < length; i++) {
+			odpowiednieLitery[i]=0;
+			odpowiednieLitery[i]=(byte) tab[i];
+		}
+		return odpowiednieLitery;
+			
+	}
+	}
+
+
