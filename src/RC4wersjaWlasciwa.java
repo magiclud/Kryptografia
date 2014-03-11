@@ -64,7 +64,7 @@ public class RC4wersjaWlasciwa {
 	private static void dodajKlucz(KeyStore keyStore, String hasloDoKeystora,
 			String aliasHasla) {
 		try {
-			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+			//Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
 			KeyGenerator keyGen = KeyGenerator.getInstance("ARC4", "BC");
 			Key secretKey = keyGen.generateKey();
