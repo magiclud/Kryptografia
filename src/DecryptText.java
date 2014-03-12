@@ -50,6 +50,18 @@ public class DecryptText {
 		return odpowiednieLitery;
 			
 	}
+
+	public static void sprawdzenie(byte[][] tablica, int length, char[] odszyfrowanaWiadomosc, char c) {
+		
+		for (int j = 0; j < length; j++) {
+			for(int i=0; i<16; i++){
+				if(!(tablica[0][j]==0||tablica[1][j]==0||tablica[2][j]==0||tablica[3][j]==0||tablica[4][j]==0||tablica[5][j]==0||tablica[6][j]==0||tablica[7][j]==0||tablica[8][j]==0||tablica[9][j]==0||tablica[10][j]==0||tablica[11][j]==0||tablica[12][j]==0||tablica[13][j]==0||tablica[14][j]==0||tablica[15][j]==0)){
+					//System.out.println("Tu jest literka: " + j);
+					odszyfrowanaWiadomosc[j]=c;
+				}
+			}
+		}
+	}
 	}
 
 
