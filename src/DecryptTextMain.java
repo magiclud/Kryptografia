@@ -11,23 +11,7 @@ public class DecryptTextMain {
 
 	public static void main(String[] args) {
 
-		widomosciDoSparsowania = new ArrayList<String[]>();
-		widomosciDoSparsowania.add(Wiadomosci.wiad1.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad2.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad3.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad4.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad5.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad6.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad7.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad8.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad9.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad10.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad11.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad12.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad13.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad14.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad15.split(" "));
-		widomosciDoSparsowania.add(Wiadomosci.wiad16.split(" "));
+		widomosciDoSparsowania = Wiadomosci.parsowanieWiadomosci();
 
 		/* wiadomosci sparsowane i zapisane jako bajty */
 		List<byte[]> wiadomosciSparsowane = new ArrayList<byte[]>();
@@ -50,11 +34,11 @@ public class DecryptTextMain {
 					wiadomosciSparsowane.get(i)));
 		}
 
-		char[] alfabet = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-				'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'y',
-				'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-				'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'Y', 'Z',
-				'.', ' ', '-', '!', ',', '(', ')' };
+		char[] alfabet = {  'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l',
+				'm', 'o', 'p', 'r', 's', 'u', 'w', 'y', 'z', 'A', 'B', 'C',
+				'D', 'F', 'G', 'H', 'E', 'I', 'J', 'K', 'L', 'M', 'N', 'n',
+				'O', 'P', 'R', 'S', 'T', 'U', 'W', 'Y', 't', 'Z', '.', 
+				'-', 'i', '!', ',', '(', ')', 'e','a',' ', };
 
 		byte[] znak_tab = new byte[szukanaWiadomosc.length];
 		List<byte[]> xorZznakiem = new ArrayList<byte[]>();
@@ -66,12 +50,12 @@ public class DecryptTextMain {
 					uzupelnienieZerami);// TODO
 		}
 
-		System.out.println(" ");
 		// DecryptText.wydrukowanieTablicyDwuwymiarowejLiczb(tablica,
 		// szukanaWiadomosc.length);
 
 		// System.out.println(new String(wynik).charAt(157));
 		System.out.println(new String(odkodowanaWiadomosc));
+
 	}
 
 	private static void znajdzZnajWSzukanejWiadomosci(char znak,

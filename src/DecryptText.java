@@ -1,4 +1,3 @@
-import java.nio.charset.Charset;
 
 public class DecryptText {
 
@@ -28,7 +27,7 @@ public class DecryptText {
 		System.out.println("");
 	}
 
-	static String alfabet = "^[a-zA-UWY-Z\\,\\.\\-\\!\\(\\)\\s]+$";
+	static String alfabet = "^[a-uwy-zA-UWY-Z\\,\\.\\-\\!\\(\\)\\s]+$";
 
 	public static byte[] uzupelnijZeramiNieprawidloweBity(byte[] mozliweLitery,
 			int length) {
