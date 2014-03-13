@@ -2,27 +2,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DecryptTextMain {
+
+	static byte[] szukanaWiadomosc;
+	static ArrayList<String[]> widomosciDoSparsowania;
+	static List<byte[]> xorKryptgramow;
+	static byte[][] macierzLiter;
+	static byte[] odkodowanaWiadomosc;
+
 	public static void main(String[] args) {
-		String hasloDoKeystora = "ala ma kota";
-		String aliasHasla = "mojAlias";
-		String sciezkaDoKeyStore = "D:\\eclipse\\Semestr4\\SzyfrStrumieniowy\\keyStore.ks";
 
-		String wiadomosc = "krowawda rhwuwi hwqjqa adidabi ";
-		byte[] kryptogram = RC4wersjaWlasciwa.zakoduj(wiadomosc,
-				RC4wersjaWlasciwa.pobierzKlucz(sciezkaDoKeyStore, aliasHasla,
-						hasloDoKeystora));
-		RC4wersjaWlasciwa.zapiszZakodowanaWiadomoscDoPilku(kryptogram);
-
-		String wiadomos2 = "pajacyk . hauihe aheuie bqi3qi";
-		byte[] kryptogram2 = RC4wersjaWlasciwa.zakoduj(wiadomos2,
-				RC4wersjaWlasciwa.pobierzKlucz(sciezkaDoKeyStore, aliasHasla,
-						hasloDoKeystora));
-
-		// System.out.println("Xor kryptogramow:    ");
-		byte[] xorKryptogramow = DecryptText
-				.wykonajXor(kryptogram, kryptogram2);
-
-		ArrayList<String[]> widomosciDoSparsowania = new ArrayList<String[]>();
+		widomosciDoSparsowania = new ArrayList<String[]>();
 		widomosciDoSparsowania.add(Wiadomosci.wiad1.split(" "));
 		widomosciDoSparsowania.add(Wiadomosci.wiad2.split(" "));
 		widomosciDoSparsowania.add(Wiadomosci.wiad3.split(" "));
@@ -50,350 +39,47 @@ public class DecryptTextMain {
 		/* wiadomosc do odszyfrowania */
 		String[] wiadDoOdszyfrowania = Wiadomosci.wiadDoOdszyfrowania
 				.split(" ");
-		byte[] szukanaWiadomosc = DecryptText
-				.wiadomoscWBajtach(wiadDoOdszyfrowania);
-		byte[][] tablica = new byte[16][szukanaWiadomosc.length];
+		szukanaWiadomosc = DecryptText.wiadomoscWBajtach(wiadDoOdszyfrowania);
+		macierzLiter = new byte[16][szukanaWiadomosc.length];
 		System.out.println("Dlugosc wiadomosci: " + szukanaWiadomosc.length);
 
 		// System.out.println("Xor kryptogramow:    ");
-		List<byte[]> xorKryptgramow = new ArrayList<byte[]>();
+		xorKryptgramow = new ArrayList<byte[]>();
 		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
 			xorKryptgramow.add(DecryptText.wykonajXor(szukanaWiadomosc,
 					wiadomosciSparsowane.get(i)));
 		}
-		
-		char [] alfabet={'a','e', 'i',' ', 'o', '.','z','s', 'k', 'p', 'r' };
-		
+
+		char[] alfabet = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+				'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w', 'y',
+				'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+				'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'Y', 'Z',
+				'.', ' ', '-', '!', ',', '(', ')' };
+
 		byte[] znak_tab = new byte[szukanaWiadomosc.length];
 		List<byte[]> xorZznakiem = new ArrayList<byte[]>();
 		List<byte[]> uzupelnienieZerami = new ArrayList<byte[]>();
-		byte[] wynik= new byte[szukanaWiadomosc.length];
-		for(int i =0; i<alfabet.length; i++){
+		odkodowanaWiadomosc = new byte[szukanaWiadomosc.length];
+		for (int i = 0; i < alfabet.length; i++) {
 			char znak = alfabet[i];
-			znajdzZnajWSzukanejWiadomosci(znak, znak_tab, xorZznakiem);//TODO
+			znajdzZnajWSzukanejWiadomosci(znak, znak_tab, xorZznakiem,
+					uzupelnienieZerami);// TODO
 		}
 
+		System.out.println(" ");
+		// DecryptText.wydrukowanieTablicyDwuwymiarowejLiczb(tablica,
+		// szukanaWiadomosc.length);
 
-		
-		/* tablice liter a */
-		byte[] a_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			a_tab[i] = 'a';
-		}
-		/* xor (xor kryptogramow i tablicy a ) */
-		List<byte[]> xorZa = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZa.add(DecryptText.wykonajXor(xorKryptgramow.get(i), a_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		List<byte[]> uzupelnienieZerami = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami.add(DecryptText
-					.uzupelnijZeramiNieprawidloweBity(xorZa.get(i),
-							szukanaWiadomosc.length));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'a', szukanaWiadomosc);
+		// System.out.println(new String(wynik).charAt(157));
+		System.out.println(new String(odkodowanaWiadomosc));
+	}
 
-		
-		/* tablice kropek */
-		byte[] kropka_tab = new byte[szukanaWiadomosc.length];
+	private static void znajdzZnajWSzukanejWiadomosci(char znak,
+			byte[] znak_tab, List<byte[]> xorZznakiem,
+			List<byte[]> uzupelnienieZerami) {
+		/* tablica znaku */
 		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			kropka_tab[i] = '.';
-		}
-		/* xor (xor kryptogramow i tablicy . ) */
-		List<byte[]> xorZKropka = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZKropka.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					kropka_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		List<byte[]> uzupelnienieZerami2 = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami2
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZKropka.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami2.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, '.', szukanaWiadomosc);
-		
-		
-		
-		/* tablice k */
-		byte[] k_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			k_tab[i] = 'k';
-		}
-		/* xor (xor kryptogramow i tablicy k ) */
-		List<byte[]> xorZk = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZk.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					k_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		List<byte[]> uzupelnienieZerami3 = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami3
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZk.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami3.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'k', szukanaWiadomosc);
-		
-		
-		
-		/* tablice p */
-		byte[] p_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			p_tab[i] = 'p';
-		}
-		/* xor (xor kryptogramow i tablicy k ) */
-		List<byte[]> xorZp = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZp.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					p_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		List<byte[]> uzupelnienieZerami4 = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami4
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZp.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami4.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'p', szukanaWiadomosc);
-		
-		/* tablice r */
-		byte[] r_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			r_tab[i] = 'r';
-		}
-		/* xor (xor kryptogramow i tablicy k ) */
-		List<byte[]> xorZr = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZr.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					r_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		List<byte[]> uzupelnienieZerami5 = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami5
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZr.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami5.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'r', szukanaWiadomosc);
-		
-		
-		/* tablice z */
-		byte[] z_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			z_tab[i] = 'z';
-		}
-		/* xor (xor kryptogramow i tablicy k ) */
-		List<byte[]> xorZz = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZz.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					z_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZz.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'z', szukanaWiadomosc);
-		
-		/* tablice i */
-		byte[] i_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			i_tab[i] = 'i';
-		}
-		/* xor (xor kryptogramow i tablicy i ) */
-		List<byte[]> xorZi = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZi.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					i_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZi.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'i', szukanaWiadomosc);
-		
-		/* tablice e */
-		byte[] e_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			e_tab[i] = 'e';
-		}
-		/* xor (xor kryptogramow i tablicy e ) */
-		List<byte[]> xorZe = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZe.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					e_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZe.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'e', szukanaWiadomosc);
-		
-		
-		/* tablice spacja */
-		byte[] spacja_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			spacja_tab[i] = ' ';
-		}
-		/* xor (xor kryptogramow i tablicy spacja ) */
-		List<byte[]> xorZspacja = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZspacja.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					spacja_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZspacja.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, ' ', szukanaWiadomosc);
-		
-		
-		
-		/* tablice znak */
-		byte[] znak_tab = new byte[szukanaWiadomosc.length];
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			znak_tab[i] = 'o';
-		}
-		/* xor (xor kryptogramow i tablicy znaku ) */
-		List<byte[]> xorZznakiem = new ArrayList<byte[]>();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			xorZznakiem.add(DecryptText.wykonajXor(xorKryptgramow.get(i),
-					znak_tab));
-		}
-		// uzupeniam 0 inne znaki niz wymagane
-		uzupelnienieZerami.clear();
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZznakiem.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
-		}
-		/*tworze macierz*/
-		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
-			}
-		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 'o', szukanaWiadomosc);
-		
-		/* tablice znak s */
-		for (int i = 0; i < szukanaWiadomosc.length; i++) {
-			znak_tab[i] = 's';
+			znak_tab[i] = (byte) znak;
 		}
 		/* xor (xor kryptogramow i tablicy znaku ) */
 		xorZznakiem.clear();
@@ -404,33 +90,20 @@ public class DecryptTextMain {
 		// uzupeniam 0 inne znaki niz wymagane
 		uzupelnienieZerami.clear();
 		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
-			uzupelnienieZerami
-					.add(DecryptText
-							.uzupelnijZeramiNieprawidloweBity(xorZznakiem.get(i),
-									szukanaWiadomosc.length));
-//			System.out.println(i + ": "
-//					+ new String(uzupelnienieZerami2.get(i)));
+			uzupelnienieZerami.add(DecryptText
+					.uzupelnijZeramiNieprawidloweBity(xorZznakiem.get(i),
+							szukanaWiadomosc.length));
 		}
-		/*tworze macierz*/
+		/* tworze macierz */
 		for (int i = 0; i < widomosciDoSparsowania.size(); i++) {
 			for (int j = 0; j < szukanaWiadomosc.length; j++) {
-				tablica[i][j] = (byte) new String(uzupelnienieZerami.get(i))
-						.charAt(j);
+				macierzLiter[i][j] = (byte) new String(
+						uzupelnienieZerami.get(i)).charAt(j);
 			}
 		}
-		/*uzupelniam wynik literka*/
-		wynik=	DecryptText.odszyfrowywanie(tablica, szukanaWiadomosc.length, 's', szukanaWiadomosc);
-		
-		
-		System.out.println(" ");
-//		DecryptText.wydrukowanieTablicyDwuwymiarowejLiczb(tablica,
-//				szukanaWiadomosc.length);
+		/* uzupelniam wynik literka */
+		odkodowanaWiadomosc = DecryptText.odszyfrowywanie(macierzLiter,
+				szukanaWiadomosc.length, znak, szukanaWiadomosc);
 
-		
-		//System.out.println(new String(wynik).charAt(157));
-		System.out.println(new String(wynik));
 	}
-
-
-
 }
